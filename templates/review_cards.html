@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add your CSS and other header elements here -->
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Review Cards - {{ deck.name }}</h1>
+        <h3>Card {{ current_card.id }} of {{ deck.cards|length }}</h3>
+        <p>Front (Question): {{ current_card.front }}</p>
+        <p>Back (Answer): {{ current_card.back }}</p>
+
+        {% if not is_last_card %}
+        <form action="/review_cards/{{ deck.id }}/{{ next_card.id }}" method="GET">
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+        {% else %}
+            <a href="/user_dashboard/{{ deck.deck_user.id }}" class="btn btn-success">Back to Deck</a>
+        {% endif %}
+    </div>
+</body>
+</html>

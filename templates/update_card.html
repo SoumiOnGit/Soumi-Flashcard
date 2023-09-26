@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <a href="/user_dashboard/{{ card.card_deck.deck_user.id }}" class="btn btn-primary float-end">Back to Deck</a>
+        <h1 class="mb-4">Update Card</h1>
+        <form action="/update_card/{{ card.id }}" method="POST">
+            <div class="mb-3">
+                <label for="front" class="form-label">Front (Question)</label>
+                <input type="text" class="form-control" id="front" name="front" value="{{ card.front }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="back" class="form-label">Back (Answer)</label>
+                <input type="text" class="form-control" id="back" name="back" value="{{ card.back }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Card</button>
+        </form>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</body>
+</html>

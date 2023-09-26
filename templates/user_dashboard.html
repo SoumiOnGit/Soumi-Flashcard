@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Flashcard App</title>
+    <style>
+        /* Reset some default styles */
+        body, h1 {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Content container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card styles */
+        .card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            width: calc(33.33% - 20px);
+            background-color: #fff; /* Default background color */
+        }
+
+        /* Add more background colors */
+        .card:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        .card:nth-child(even) {
+            background-color: #e5e5e5;
+        }
+
+        .card a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+
+        /* Add more styles as needed */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ user.username }}</h1>
+    </header>
+    <div class="container">
+        <h2>Your Decks</h2>
+        &nbsp <a href="/add_deck/{{ user.id }}"> Add Deck</a> <br>
+        {% for deck in user.user_decks %}
+        <div class="card">
+            <h3>{{ deck.name }}- {{deck.cards|length}}</h3>
+            <p>Last Reviewed: {{ deck.last_reviewed }}</p>
+            <p>Deck Score: {{ deck.deck_score }}</p>
+            <a href="/update_deck/{{ deck.id }}">Update Deck</a>
+            <a href="/delete_deck/{{ deck.id }}">Delete Deck</a> <br>
+            <a href="/add_card/{{ deck.id }}" class="btn btn-success">Add Card</a>
+            {% if deck.cards %}
+            <a href="/review_cards/{{ deck.id }}/{{ deck.cards[0].id }}" class="btn btn-success">Review Cards</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <script src="" async defer></script>
+</body>
+</html>
