@@ -2,21 +2,62 @@
 <html lang="en">
 <head>
     <!-- Add your CSS and other header elements here -->
+    <style>
+        /* CSS to hide the answer by default */
+        #answer {
+            display: none;
+        }
+    </style>
+    <script>
+        // JavaScript function to toggle answer visibility
+        function toggleAnswer() {
+            var answerDiv = document.getElementById("answer");
+            if (answerDiv.style.display === "none") {
+                answerDiv.style.display = "block";
+            } else {
+                answerDiv.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-5">
         <h1>Review Cards - {{ deck.name }}</h1>
         <h3>Card {{ current_card.id }} of {{ deck.cards|length }}</h3>
         <p>Front (Question): {{ current_card.front }}</p>
-        <p>Back (Answer): {{ current_card.back }}</p>
+        
+        <!-- Button to show/hide the answer -->
+        <button onclick="toggleAnswer()" class="btn btn-primary">Show Answer</button>
+        
+        <!-- Answer text (hidden by default) -->
+        <p id="answer" style="display: none;">Back (Answer): {{ current_card.back }}</p>
+
+        <!-- Form for delete and update actions -->
+        <form action="/review_cards/{{ deck.id }}/{{ current_card.id }}" method="POST" class="mt-3">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+
+        <form action="/review_cards/{{ deck.id }}/{{ current_card.id }}" method="POST" class="mt-3">
+            <input type="hidden" name="action" value="update_score">
+            <label for="new_score">New Score:</label>
+            <input type="number" name="new_score" id="new_score" min="0" max="100" required>
+            <button type="submit" class="btn btn-primary">Update Score</button>
+        </form>
 
         {% if not is_last_card %}
-        <form action="/review_cards/{{ deck.id }}/{{ next_card.id }}" method="GET">
-            <button type="submit" class="btn btn-primary">Next</button>
-        </form>
+            <form action="/review_cards/{{ deck.id }}/{{ next_card.id }}" method="GET" class="mt-3">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </form>
         {% else %}
-            <a href="/user_dashboard/{{ deck.deck_user.id }}" class="btn btn-success">Back to Deck</a>
+            <a href="/user_dashboard/{{ deck.deck_user.id }}" class="btn btn-success mt-3">Back to Deck</a>
         {% endif %}
+        
+        <form action="/review_cards/{{ deck.id }}/{{ current_card.id }}" method="POST" class="mt-3">
+            <input type="hidden" name="action" value="edit">
+            <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+
     </div>
 </body>
 </html>

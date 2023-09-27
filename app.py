@@ -179,7 +179,7 @@ def add_card(deck_id):
     
     return render_template('add_card.html', deck=deck)
 
-@app.route('/review_cards/<int:deck_id>/<int:card_id>', methods=['GET'])
+"""@app.route('/review_cards/<int:deck_id>/<int:card_id>', methods=['GET'])
 def review_cards(deck_id, card_id):
     deck = Deck.query.get_or_404(deck_id)
     cards = deck.cards
@@ -199,6 +199,78 @@ def review_cards(deck_id, card_id):
     next_card = cards[current_card_index + 1] if not is_last_card else None
 
     return render_template('review_cards.html', deck=deck, current_card=current_card, next_card=next_card, is_last_card=is_last_card)
+"""
+
+@app.route('/review_cards/<int:deck_id>/<int:card_id>', methods=['GET', 'POST'])
+def review_cards(deck_id, card_id):
+    deck = Deck.query.get_or_404(deck_id)
+    cards = deck.cards
+
+    # Find the index of the current card by matching card_id
+    current_card_index = None
+    for i, card in enumerate(cards):
+        if card.id == card_id:
+            current_card_index = i
+            break
+
+    # Check if the current card is the last card in the deck
+    is_last_card = current_card_index == len(cards) - 1
+
+    # Get the current card and the next card (if not the last card)
+    current_card = cards[current_card_index]
+    next_card = cards[current_card_index + 1] if not is_last_card else None
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        # Perform CRUD operations based on the action
+        if action == 'edit':
+            # Handle card edit (redirect to an edit page)
+            return redirect(url_for('edit_card', card_id=current_card.id))
+
+        elif action == 'delete':
+            # Handle card deletion
+            try:
+                db.session.delete(current_card)
+                db.session.commit()
+                return redirect(f'/user_dashboard/{deck.deck_user.id}')
+            except Exception as e:
+                print(e)
+                return 'There was an issue deleting the card'
+
+        elif action == 'update_score':
+            # Handle updating card score (you can customize this based on your requirements)
+            new_score = request.form.get('new_score')
+            try:
+                current_card.card_score = int(new_score)
+                db.session.commit()
+            except ValueError:
+                print("Invalid score value")
+
+        # Add other CRUD operations as needed
+
+    return render_template('review_cards.html', deck=deck, current_card=current_card, next_card=next_card, is_last_card=is_last_card)
+
+@app.route('/edit_card/<int:card_id>', methods=['GET', 'POST'])
+def edit_card(card_id):
+    card = Card.query.get_or_404(card_id)
+
+    if request.method == 'POST':
+        front = request.form.get('front')
+        back = request.form.get('back')
+
+        # Update card information
+        card.front = front
+        card.back = back
+
+        try:
+            db.session.commit()
+            return redirect(url_for('user_dashboard', user_id=card.card_deck.deck_user.id))
+        except Exception as e:
+            print(e)
+            return 'There was an issue updating the card'
+
+    return render_template('edit_card.html', card=card)
 
 
 
